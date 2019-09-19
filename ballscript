@@ -1,0 +1,83 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class ballscript : MonoBehaviour
+{
+    public GameObject ball;
+    public int number;
+    public float secondsBetweenSpawn;
+    public float elapsedTime;
+    public Vector3 spawnLocation;
+    public float timer;
+
+
+    private GameObject[] list;
+    public int num;
+
+    public AudioClip boing;
+    public AudioSource sources;
+    // Start is called before the first frame update
+    void Start()
+    {
+
+        elapsedTime = 1;
+        secondsBetweenSpawn = 2;
+
+        timer = 1000 * Time.deltaTime;
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+
+        list = GameObject.FindGameObjectsWithTag("ball");
+
+        // spawning
+        Spawn();
+        Debug.Log(timer);
+
+        // counting objects
+
+
+        if (list[2])
+        {
+            CancelInvoke("Spawn");
+        }
+
+        // destroying if offscreen
+
+        if (transform.position.y <= -5)
+        {
+            Destroy(this.gameObject);
+        }
+
+      
+     }
+
+
+    void OnTriggerEnter2D(Collider2D ball)
+    {
+        GetComponent<SpriteRenderer>().color = Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f);
+        sources.clip = boing;
+        sources.Play();
+
+    }
+
+
+
+    void Spawn()
+    {
+        // spawning
+        elapsedTime += Time.deltaTime;
+
+        if (elapsedTime > secondsBetweenSpawn)
+        {
+            elapsedTime = 0;
+
+            spawnLocation = new Vector2(Random.Range(-7, 7), 5);
+            Instantiate(ball, spawnLocation, Quaternion.identity);
+
+        }
+    }
+}
